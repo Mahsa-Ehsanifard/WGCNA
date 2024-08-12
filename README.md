@@ -23,5 +23,10 @@ BiocManager::install("WGCNA")
 library(WGCNA)
 ```
 
+Usually we need to rotate or *transpose* the rows with the columns in the matrix using `t` function.
+
+> rows => samples , columns => genes
+
+
 
 
