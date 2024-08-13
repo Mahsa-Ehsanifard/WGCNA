@@ -576,6 +576,71 @@ columns as mutated and non-mutated states for samples holding mutated
 genes and non-mutated genes respectively.</li>
 </ul>
 </div>
+<div id="gene-significance-and-module-membership-gs-mm" class="section level3">
+<h3>Gene Significance and Module Membership = GS , MM</h3>
+<ul>
+<li>We can use the gene significance along with the genes
+<strong>intramodular connectivity</strong> to identify potential target
+genes associated with a particular trait of interest.</li>
+</ul>
+<blockquote>
+<p>Connectivity - how connected a speficic node is in the network (how
+many nodes have high correlation with that node). High connectivity
+indicates a hub gene (central to many nodes).</p>
+</blockquote>
+<blockquote>
+<p>Whole Network connectivity - a measure for how well the node is
+connected throughout the entire system Intramodular connectivity - a
+measure for how well the node is connected within its assigned module.
+Also an indicator for how well that node belongs to its module. This is
+also known as <strong>module membership (MM)</strong>.</p>
+</blockquote>
+<p>Calculate the module membership and the associated p-values. first I
+should make p.vaues of each gene corr to their own modules</p>
+<p><code>{r} MMpvalue &lt;- as.data.frame(corPvalueStudent(as.matrix(geneMODmem), nSamples = nsamples)) #make name of module membership columns names(geneMODmem) &lt;- paste(&quot;MM&quot;, modNames, sep = &quot;&quot;) names(MMpvalue) &lt;- paste(&quot;p.mm&quot;, modNames, sep = &quot;&quot;)</code></p>
+<p>Calculate the gene significance and associated p-values</p>
+<p><code>{r} geneTraitSig &lt;- as.data.frame(cor(datExpr, datTraits, use = &quot;p&quot;))  GSpvalue &lt;- as.data.frame(corPvalueStudent(as.matrix(geneTraitSig), nsamples))  names(geneTraitSig) = paste(&quot;GS.&quot;, names(datTraits), sep=&quot;&quot;) names(GSpvalue) = paste(&quot;p.GS.&quot;, names(datTraits), sep=&quot;&quot;)</code></p>
+<div id="intramodular-analysis" class="section level4">
+<h4>Intramodular analysis</h4>
+<p>Using these two parameters we can identify the hub genes. The
+<strong>MM &gt; 0.80 and GS &gt; 0.20</strong> cutoffs are used together
+for detecting hub genes.</p>
+<ul>
+<li>hub genes are the genes released from a particular module with both
+criteria.</li>
+</ul>
+<p>```{r} brown = “brown” #the significant module with trait in heatmap
+column &lt;- match(brown, modNames) moduleGenes &lt;-
+moduleColors==brown sizeGrWindow(3,3) par(mfrow = c(2,4))
+verboseScatterplot(abs(geneMODmem[moduleGenes, column]),
+abs(geneTraitSig[moduleGenes, 1]), xlab = paste(“Module Membership in”,
+brown,“module”), ylab = “Gene significance for brafv600eplus”, main =
+paste(“Module membership vs. gene significance”), cex.main = 1.2,
+cex.lab = 1.2, cex.axis = 1.2, col = brown, abline = T)</p>
+<p>abline(h = 0.20,v = 0.80, col = “red”)</p>
+<pre><code>
+Now we can extract the hub genes as a table based on two criteria simultaneously. 
+
+```{r}
+Probes = names(datExpr)
+inModule &lt;- is.finite(match(moduleColors, brown))
+modProbes &lt;- Probes[inModule]
+modProbes &lt;- data.frame(modProbes)
+GenemmPval &lt;- MMpvalue[MMpvalue$p.mmbrown&lt;0.05,]
+names(GenemmPval)
+GeneGSpval &lt;- data.frame(GSpvalue[GSpvalue$p.GS.v600e_plus&lt;0.05,])
+goodgeneMM &lt;- modProbes[modProbes$modProbes %in% as.character(rownames(GenemmPval)),]
+goodGS &lt;- modProbes[modProbes$modProbes %in% as.character(rownames(GeneGSpval)),]
+MMgene &lt;- goodgeneMM[goodgeneMM %in% 
+                             as.character(rownames(geneMODmem)[geneMODmem$MMbrown&gt;0.80])]
+
+GSgene &lt;- goodGS[goodGS %in% 
+                         as.character(rownames(geneTraitSig)[geneTraitSig$GS.v600e_plus&gt;0.20])]
+
+MM_GSGene &lt;- MMgene[MMgene %in% as.character(GSgene)]
+MM_GSGene &lt;- data.frame(MM_GSGene)</code></pre>
+</div>
+</div>
 </div>
 </div>
 
