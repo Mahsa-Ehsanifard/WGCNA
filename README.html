@@ -364,6 +364,13 @@ display: none;
 </div>
 <div id="description-weighted-gene-co-expression-network-analysis" class="section level2">
 <h2>description: Weighted Gene Co-expression Network Analysis</h2>
+<p>Useful links:</p>
+<p><a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-559">WGCNA:
+an R package for weighted correlation network analysis</a></p>
+<p><a href="https://books.google.com/books?id=ZCh06NgMFesC&amp;pg=PR11&amp;dq=wgcna:+an+r+package+for+weighted+correlation+network+analysis&amp;hl=en&amp;newbks=1&amp;newbks_redir=1&amp;sa=X&amp;ved=2ahUKEwju5qiQzvGHAxU9daQEHU7YIAwQ6AF6BAgCEAI">book;
+Weighted Network Analysis</a></p>
+<p><a href="https://www.bioconductor.org/packages/release/bioc/vignettes/BioNERO/inst/doc/vignette_01_GCN_inference.html">WGCNA;
+bioconductor</a></p>
 <p>The <strong>WGCNA</strong> pipeline is expected an input matrix of
 normalized expression values including samples in columns and gene names
 on rows. There is no limitation for the methods exploring the expression
@@ -405,6 +412,14 @@ together. It means that other samples above this line display as
 outliers because they are in a far distance of others.</p></li>
 </ul>
 <p><code>{r} #line cut for removing the outlier sample # the highest height is 100 for example abline(h = 100, col = &quot;red&quot;)</code></p>
+<p><code>{r} &lt;- cutreeStatic(sampleTree, cutHeight = 100) table(clust)</code></p>
+<ul>
+<li>clust 1 contains the samples we want to keep.</li>
+</ul>
+<p><code>{r} keepsample &lt;- clust==1</code></p>
+<ul>
+<li>The outlier samples are removed from the main matrix.</li>
+</ul>
 </div>
 </div>
 </div>

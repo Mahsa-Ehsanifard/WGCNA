@@ -14,6 +14,15 @@
 
 ## description: Weighted Gene Co-expression Network Analysis
 
+Useful links:
+
+[WGCNA: an R package for weighted correlation network analysis](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-559)
+
+[book; Weighted Network Analysis](https://books.google.com/books?id=ZCh06NgMFesC&pg=PR11&dq=wgcna:+an+r+package+for+weighted+correlation+network+analysis&hl=en&newbks=1&newbks_redir=1&sa=X&ved=2ahUKEwju5qiQzvGHAxU9daQEHU7YIAwQ6AF6BAgCEAI)
+
+[WGCNA; bioconductor](https://www.bioconductor.org/packages/release/bioc/vignettes/BioNERO/inst/doc/vignette_01_GCN_inference.html)
+
+
 The **WGCNA** pipeline is expected an input matrix of normalized expression values including samples in columns and gene names on rows. There is no limitation for the methods exploring the expression values; *RNA-Seq* or *microarray* methods. We can use *GEO* or *TCGA* expression profiles for this analysis. 
 
 #### Installation
@@ -52,6 +61,22 @@ The graphical tree output is based on the *height* values on axis y between samp
 # the highest height is 100 for example
 abline(h = 100, col = "red") 
 ```
+
+```{r}
+<- cutreeStatic(sampleTree, cutHeight = 100)
+table(clust)
+```
+
+* clust 1 contains the samples we want to keep.
+
+```{r}
+keepsample <- clust==1
+```
+
+* The outlier samples are removed from the main matrix.
+
+
+
 
 
 
