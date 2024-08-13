@@ -421,6 +421,69 @@ outliers because they are in a far distance of others.</p></li>
 <li>The outlier samples are removed from the main matrix.</li>
 </ul>
 </div>
+<div id="loading-traits" class="section level3">
+<h3>loading traits</h3>
+<p>We need a table of <em>trait</em> information such as <em>clinical
+data, molecular characteristics, or phenotypic and genotypic
+features</em> to analyze the correlation and relationship between traits
+and gene expressions. In this step, it is needed to investigate the
+relationships of traits with gene modules to identify hub genes
+correlated strongly with an important features of samples.</p>
+<ul>
+<li><p>Trait could be the features or characteristics of genes such as
+regulation levels.</p></li>
+<li><p>Clinical data includes staging, mutations, molecular or cellular
+features, etc…</p></li>
+</ul>
+</div>
+<div id="choose-a-set-of-soft-thresholding-power" class="section level3">
+<h3>Choose a set of soft thresholding power</h3>
+<p>Choosing a <strong>soft power (β)</strong> is an important step to
+detect modules.</p>
+<ul>
+<li><p>power number is a critical index to identify gene module
+packing</p></li>
+<li><p>β parameter will be to calculate our adjacency matrix.</p></li>
+<li><p>The <code>pickSoftThreshold</code> function calculates multiple
+networks all based on different β values and returns a data frame with
+the <strong>R2</strong> values for the networks <strong>scale-free
+topology</strong> model fit as well as the <strong>mean
+connectivity</strong> measures.</p></li>
+</ul>
+<p><code>{r} pickSoftThreshold(matrix)</code></p>
+<pre><code>       Power SFT.R.sq slope truncated.R.sq mean.k. median.k. max.k.
+## 1      1   0.0278  0.345          0.456  747.00  762.0000 1210.0
+## 2      2   0.1260 -0.597          0.843  254.00  251.0000  574.0
+## 3      3   0.3400 -1.030          0.972  111.00  102.0000  324.0
+## 4      4   0.5060 -1.420          0.973   56.50   47.2000  202.0
+## 5      5   0.6810 -1.720          0.940   32.20   25.1000  134.0
+## 6      6   0.9020 -1.500          0.962   19.90   14.5000   94.8
+## 7      7   0.9210 -1.670          0.917   13.20    8.6800   84.1
+## 8      8   0.9040 -1.720          0.876    9.25    5.3900   76.3
+## 9      9   0.8590 -1.700          0.836    6.80    3.5600   70.5
+## 10    10   0.8330 -1.660          0.831    5.19    2.3800   65.8
+## 11    12   0.8530 -1.480          0.911    3.33    1.1500   58.1
+## 12    14   0.8760 -1.380          0.949    2.35    0.5740   51.9
+## 13    16   0.9070 -1.300          0.970    1.77    0.3090   46.8
+## 14    18   0.9120 -1.240          0.973    1.39    0.1670   42.5
+## 15    20   0.9310 -1.210          0.977    1.14    0.0951   38.7</code></pre>
+<p>Plot the R2 values as a function of the soft thresholds</p>
+<blockquote>
+<p>We should be <em>maximizing</em> the R2 (β) value and
+<em>minimizing</em> mean connectivity.</p>
+</blockquote>
+<p><code>{r} par(mfrow=c(1,2)) plot(sft$fitIndices[,1],      -sign(sft$fitIndices[,3])*sft$fitIndices[,2],      xlab=&quot;Soft Threshold (power)&quot;,ylab=&quot;Scale Free Topology Model Fit, signed Rˆ2&quot;,type=&quot;n&quot;,main=paste(&quot;Scale independence&quot;)) text(sft$fitIndices[,1],      -sign(sft$fitIndices[,3])*sft$fitIndices[,2],      labels=powers,col=&quot;red&quot;) abline(h=0.80,col=&quot;red&quot;) plot(sft$fitIndices[,1],sft$fitIndices[,5],type=&quot;n&quot;,      xlab=&quot;Soft Threshold (power)&quot;,ylab=&quot;Mean Connectivity&quot;,      main=paste(&quot;Mean connectivity&quot;)) text(sft$fitIndices[,1],sft$fitIndices[,5],labels=powers,      col=&quot;red&quot;)</code></p>
+<ul>
+<li>We can determine the soft power threshold which is a number as it is
+the β that retains the <em>highest</em> mean connectivity (above zero)
+while reaching an R2 value above <strong>0.80</strong>.</li>
+</ul>
+<blockquote>
+<p>NOTE: the higher the value, the stronger the connection strength will
+be of highly correlated gene expression profiles and the more devalued
+low correlations will be.</p>
+</blockquote>
+</div>
 </div>
 </div>
 
