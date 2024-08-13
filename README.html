@@ -641,6 +641,15 @@ MM_GSGene &lt;- MMgene[MMgene %in% as.character(GSgene)]
 MM_GSGene &lt;- data.frame(MM_GSGene)</code></pre>
 </div>
 </div>
+<div id="network-visualization-of-eigengenes" class="section level3">
+<h3>Network Visualization of Eigengenes</h3>
+<p>Plot the relationships among the eigengenes and the trait</p>
+<p><code>{r} par(cex = 0.9) plotEigengeneNetworks(MET, &quot;&quot;, marDendro = c(0,4,1,2), marHeatmap = c(5,4,1,2), cex.lab = 0.8, xLabelsAngle = 90)</code></p>
+<p>With this heatmap we can identify groups of correlated eigengenes
+called <em>meta modules</em>. Modules with mutual correlations stronger
+than their correlation with the specified clinical trait would be
+grouped into a meta module.</p>
+</div>
 </div>
 </div>
 
