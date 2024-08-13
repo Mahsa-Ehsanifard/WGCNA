@@ -343,7 +343,7 @@ verboseScatterplot(abs(geneMODmem[moduleGenes, column]),
 abline(h = 0.20,v = 0.80, col = "red")
 ```
 
-Now we can extract the hub genes as a table based on two criteria simultaneously. 
+Now we can extract the hub genes as a table based on two criteria simultaneously. The hub genes have MM values more than 80% membership in the module, and GS values more than 20% significant correlation with a particular trait.
 
 ```{r}
 Probes = names(datExpr)
