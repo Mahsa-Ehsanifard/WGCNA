@@ -377,7 +377,7 @@ plotEigengeneNetworks(MET, "", marDendro = c(0,4,1,2), marHeatmap = c(5,4,1,2), 
 
 With this heatmap we can identify groups of correlated eigengenes called *meta modules*. Modules with mutual correlations stronger than their correlation with the specified clinical trait would be grouped into a meta module. 
 
-
+![](D:\my R\my thesis\WGCNA\deg wgcna\tcga deg)
 
 
 
