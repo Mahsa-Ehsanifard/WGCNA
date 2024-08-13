@@ -191,11 +191,11 @@ table(Modules)
 
 ```
 Modules
-##   0   1   2   3   4   5   6   7   8   9  
-##  88 614 316 311 257 235 225 212 158 153 
+##   0   1   2   3   4   5   6    
+##  88 614 316 311 257 235 225 
 ```
 
-* Here we can see 9 modules were created with the number of genes belong to them. The Label 0 Module is reserved for unassigned genes (genes that do not fit in any module).
+* Here we can see 6 modules were created with the number of genes belong to them. The Label 0 Module is reserved for unassigned genes (genes that do not fit in any module).
 
 #### Module Eigengene Identification
 
@@ -210,20 +210,20 @@ head(MEs)
 ```
 
 ```
-          MEblack        MEblue     MEbrown        MEcyan      MEdarkgreen
+            MEblue     MEbrown        MEturquis    MEgreen   MEyellow 
 ## F2_2   0.013902476  0.0410177922 0.007072125  0.12978459  0.006276361
 ## F2_3   0.066675342 -0.0009540238 0.072447744 -0.07777835  0.010326534
 ## F2_14  0.066711912 -0.0841292811 0.062700422 -0.19072152  0.003707524
 ## F2_15 -0.064480250  0.0909333146 0.050275810  0.04077621 -0.019067137
 ## F2_19  0.063634038 -0.0709378322 0.016600588 -0.04036901  0.017796637
 ## F2_20 -0.001201217  0.0653004166 0.049766750  0.10391289 -0.040252274
-##       MEdarkred     MEgreen     MEgreenyellow     MEgrey   MEgrey60
-## F2_2   0.006971934 -0.13278003    0.04138109 -0.0055751098  0.02466696
-## F2_3  -0.016017527 -0.03032564   -0.02369461  0.0134091891  0.01111424
-## F2_14 -0.041321626  0.08744352   -0.20480126 -0.0138913444 -0.07769904
-## F2_15 -0.014390509 -0.03874689   -0.03421073 -0.0199902439  0.04570456
-## F2_19 -0.023401174  0.09939074   -0.04141718  0.0008595106 -0.01838634
-## F2_20  0.113170728  0.02934683   -0.02197066 -0.0408911933 
+##           MEgrey   
+## F2_2   0.006971934 
+## F2_3  -0.016017527 
+## F2_14 -0.041321626  
+## F2_15 -0.014390509
+## F2_19 -0.023401174 
+## F2_20  0.113170728 
 ```
 
 #### Module Merging
@@ -256,6 +256,44 @@ plotDendroAndColors(geneTree, cbind(dynamicColor, mergeColors),
                     dendroLabels = FALSE, hang = 0.03,
                     addGuide = TRUE, guideHang = 0.05)
 ```
+
+### Quantifying module-trait associations
+
+correlation between each ME and each trait is calculated
+
+```{r}
+modulTraitcor <- cor(MEs, datTraits, use = "p") 
+```
+
+correlations with p.values and significance values
+
+```{r}
+moduleTraitPval <- corPvalueStudent(modulTraitcor, nsamples)
+adjPval <- p.adjust(moduleTraitPval)
+```
+
+Visualization of the module-trait association, displaying correlations and their p-values
+
+```{r}
+sizeGrWindow(12,9)
+textMatrix <- paste(signif(modulTraitcor, 2), "\n(",
+                    signif(moduleTraitPval, 1), ")", sep = "")
+dim(textMatrix) <- dim(modulTraitcor)
+par(mar = c(6, 8.5, 3, 1))
+labeledHeatmap(Matrix = module.trait.correlation,
+xLabels = names(datTraits),
+yLabels = names(mergedMEs),
+ySymbols = names(mergedMEs),
+colorLabels = FALSE,
+colors = blueWhiteRed(50),
+textMatrix = textMatrix,
+setStdMargins = FALSE,
+cex.text = 0.4,
+zlim = c(-1,1),
+main = paste("Module-trait relationships"))
+```
+
+* We can use gene mutation status **( or binary traits)** as trait features for analyze the correlation. There would be two columns as mutated and non-mutated states for samples holding mutated genes and non-mutated genes respectively.
 
 
 
