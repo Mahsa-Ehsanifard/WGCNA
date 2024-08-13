@@ -142,6 +142,123 @@ text(sft$fitIndices[,1],sft$fitIndices[,5],labels=powers,
 
 > NOTE: the higher the value, the stronger the connection strength will be of highly correlated gene expression profiles and the more devalued low correlations will be.
 
+Now we have the soft threshold power determined we can call on the `adjacency` function. This function calculates the *similarity* measurement and transforms the similarity by the adjacency function and generates a **weighted network adjacency matrix**.
+
+```{r}
+adjacency(matrix, power = 3)
+```
+
+### Topological Overlap Matrix = TOM
+
+* Turn adjacency into topological overlap
+
+* creating a matrix for showing the neighbors similarity correlation
+
+```{r}
+TOM <- TOMsimilarity(adjacency)
+```
+
+To convert this matrix into a dissimilarity matrix we can subtract the TOM object from 1.
+
+```{r}
+dissTOM <- 1-TOM
+```
+
+#### Hierarchical Clustering Analysis
+
+The dissimilarity/distance measures are then clustered using *linkage hierarchical* clustering and a dendrogram (cluster tree) of genes is constructed.
+
+```{r}
+hierTOM = hclust(as.dist(dissTOM),method="average")
+```
+
+```{r}
+#plotting the dendrogram
+sizeGrWindow(12,9)
+plot(geneTree, xlab="", sub="", main = "Gene clustering on TOM-based dissimilarity", 
+labels = FALSE, hang = 0.04)
+```
+
+To identify modules from this gene dendrogram, we can use the `cutreeDynamic` function.
+
+```{r}
+Modules <- cutreeDynamic(dendro = geneTree, distM = TOM, deepSplit = 2, pamRespectsDendro = FALSE, minClusterSize = 30)
+```
+
+```{r}
+table(Modules) 
+```
+
+```
+Modules
+##   0   1   2   3   4   5   6   7   8   9  
+##  88 614 316 311 257 235 225 212 158 153 
+```
+
+* Here we can see 9 modules were created with the number of genes belong to them. The Label 0 Module is reserved for unassigned genes (genes that do not fit in any module).
+
+#### Module Eigengene Identification
+
+A **ME (Module Eigengene)** is the standardized gene expression profile for a given module.
+
+To identify the Module Eigengene we can call on the expression data into the `moduleEigengenes` function.
+
+```{r}
+MElist <- moduleEigengenes(expression.data, colors = ModuleColors) 
+MEs <- MElist$eigengenes 
+head(MEs)
+```
+
+```
+          MEblack        MEblue     MEbrown        MEcyan      MEdarkgreen
+## F2_2   0.013902476  0.0410177922 0.007072125  0.12978459  0.006276361
+## F2_3   0.066675342 -0.0009540238 0.072447744 -0.07777835  0.010326534
+## F2_14  0.066711912 -0.0841292811 0.062700422 -0.19072152  0.003707524
+## F2_15 -0.064480250  0.0909333146 0.050275810  0.04077621 -0.019067137
+## F2_19  0.063634038 -0.0709378322 0.016600588 -0.04036901  0.017796637
+## F2_20 -0.001201217  0.0653004166 0.049766750  0.10391289 -0.040252274
+##       MEdarkred     MEgreen     MEgreenyellow     MEgrey   MEgrey60
+## F2_2   0.006971934 -0.13278003    0.04138109 -0.0055751098  0.02466696
+## F2_3  -0.016017527 -0.03032564   -0.02369461  0.0134091891  0.01111424
+## F2_14 -0.041321626  0.08744352   -0.20480126 -0.0138913444 -0.07769904
+## F2_15 -0.014390509 -0.03874689   -0.03421073 -0.0199902439  0.04570456
+## F2_19 -0.023401174  0.09939074   -0.04141718  0.0008595106 -0.01838634
+## F2_20  0.113170728  0.02934683   -0.02197066 -0.0408911933 
+```
+
+#### Module Merging
+
+Calculate dissimilarity of module eigengenes
+
+```{r}
+MEdiss <- 1- cor(MEs)
+```
+
+* heirerichal clustering for eigengenes to show closed or overlapped modules if they're exist
+
+* put the cutoff line for more than 0.25 distance which it means 0.75 correlation
+
+* I want to merge each two modules have more than 0.75 correlation
+
+* merging close modules
+
+```{r}
+merge <- mergeCloseModules(datExpr, dynamicColor, cutHeight = 0.25, verbose = 3)
+mergeColors <- merge$colors
+table(mergeColors)
+mergedME <- merge$newMEs # Eigengenes of the new merged modules
+```
+
+```{r}
+sizeGrWindow(12, 9)
+plotDendroAndColors(geneTree, cbind(dynamicColor, mergeColors),
+                    c("Dynamic Tree Cut", "Merged dynamic"),
+                    dendroLabels = FALSE, hang = 0.03,
+                    addGuide = TRUE, guideHang = 0.05)
+```
+
+
+
 
 
 
