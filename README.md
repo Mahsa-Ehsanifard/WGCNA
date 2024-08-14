@@ -75,6 +75,8 @@ keepsample <- clust==1
 
 * The outlier samples are removed from the main matrix.
 
+![new sample cluster](https://github.com/user-attachments/assets/7dffcbf2-0f1b-478a-bf85-b13e68ca4304)
+
 ### loading traits
 
 We need a table of *trait* information such as *clinical data, molecular characteristics, or phenotypic and genotypic features* to analyze the correlation and relationship between traits and gene expressions. In this step, it is needed to investigate the relationships of traits with gene modules to identify hub genes correlated strongly with an important features of samples.
@@ -141,6 +143,8 @@ text(sft$fitIndices[,1],sft$fitIndices[,5],labels=powers,
 * We can determine the soft power threshold which is a number as it is the β that retains the *highest* mean connectivity (above zero) while reaching an R2 value above **0.80**.
 
 > NOTE: the higher the value, the stronger the connection strength will be of highly correlated gene expression profiles and the more devalued low correlations will be.
+
+![power](https://github.com/user-attachments/assets/f7f3bc5f-f39b-4594-b471-3d43aed3bfb0)
 
 Now we have the soft threshold power determined we can call on the `adjacency` function. This function calculates the *similarity* measurement and transforms the similarity by the adjacency function and generates a **weighted network adjacency matrix**.
 
@@ -257,6 +261,9 @@ plotDendroAndColors(geneTree, cbind(dynamicColor, mergeColors),
                     addGuide = TRUE, guideHang = 0.05)
 ```
 
+![merged modules](https://github.com/user-attachments/assets/173c1e0c-952b-4ed2-8a4f-c6c4d1446fda)
+
+
 ### Quantifying module-trait associations
 
 correlation between each ME and each trait is calculated
@@ -293,7 +300,13 @@ zlim = c(-1,1),
 main = paste("Module-trait relationships"))
 ```
 
+![new clin heatmap](https://github.com/user-attachments/assets/2b88a6f5-3d51-4008-875b-5eff66c73675)
+
+
 * We can use gene mutation status **( or binary traits)** as trait features for analyze the correlation. There would be two columns as mutated and non-mutated states for samples holding mutated genes and non-mutated genes respectively.
+
+![v600e heatmap](https://github.com/user-attachments/assets/a0c55c9e-70db-42fc-abd3-35e7ebb2810e)
+
 
 ### Gene Significance and Module Membership = GS , MM
 
@@ -364,6 +377,8 @@ GSgene <- goodGS[goodGS %in%
 MM_GSGene <- MMgene[MMgene %in% as.character(GSgene)]
 MM_GSGene <- data.frame(MM_GSGene)
 ```
+![blue lymph](https://github.com/user-attachments/assets/310f039f-ad36-468b-a98e-c4cfb343b906)
+
 
 ### Network Visualization of Eigengenes
 
@@ -377,6 +392,7 @@ plotEigengeneNetworks(MET, "", marDendro = c(0,4,1,2), marHeatmap = c(5,4,1,2), 
 
 With this heatmap we can identify groups of correlated eigengenes called *meta modules*. Modules with mutual correlations stronger than their correlation with the specified clinical trait would be grouped into a meta module. 
 
+![eigengene plot](https://github.com/user-attachments/assets/6f205ae1-6121-48c6-9b40-db8ec5f9d061)
 
 
 
